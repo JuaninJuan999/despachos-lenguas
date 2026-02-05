@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Imports\DespachoImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Despacho;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DespachoController extends Controller
 {
@@ -57,4 +58,24 @@ class DespachoController extends Controller
         
         return view('despachos.show', compact('despacho'));
     }
+
+    // Generar PDF del despacho
+
+public function generatePDF(Despacho $despacho)
+{
+    // Verificar que el usuario tenga permiso (es el dueño del despacho)
+    if ($despacho->usuario_id !== auth()->id()) {
+        abort(403, 'No tienes permiso para ver este despacho');
+    }
+
+    // Cargar los productos del despacho
+    $despacho->load('productos');
+
+    // Generar el PDF
+    $pdf = Pdf::loadView('despachos.pdf.despacho', compact('despacho'))
+        ->setPaper('a4', 'landscape'); // Horizontal para mejor visualización
+
+    // Descargar el PDF
+    return $pdf->download('despacho-' . $despacho->id . '.pdf');
+}
 }

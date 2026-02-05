@@ -1,9 +1,16 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Detalle del Despacho #') }}{{ $despacho->id }}
-            </h2>
+<x-slot name="header">
+    <div class="flex justify-between items-center">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Detalle del Despacho #') }}{{ $despacho->id }}
+        </h2>
+        <div class="flex gap-2">
+            <a 
+                href="{{ route('despachos.pdf', $despacho->id) }}"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200 shadow-md"
+                target="_blank"
+            >
+                📄 Descargar PDF
+            </a>
             <a 
                 href="{{ route('despachos.index') }}"
                 class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition duration-200"
@@ -11,7 +18,8 @@
                 ← Volver al Listado
             </a>
         </div>
-    </x-slot>
+    </div>
+</x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

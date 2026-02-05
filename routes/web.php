@@ -16,12 +16,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Rutas de Despachos
+});
+
+// Rutas de Despachos
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/despachos', [DespachoController::class, 'index'])->name('despachos.index');
-    Route::get('/despachos/importar', [DespachoController::class, 'showImport'])->name('despachos.import');
-    Route::post('/despachos/importar', [DespachoController::class, 'importExcel'])->name('despachos.store');
-    Route::get('/despachos/{id}', [DespachoController::class, 'show'])->name('despachos.show');
+    Route::get('/despachos/importar', [DespachoController::class, 'import'])->name('despachos.import');
+    Route::post('/despachos', [DespachoController::class, 'store'])->name('despachos.store');
+    Route::get('/despachos/{despacho}', [DespachoController::class, 'show'])->name('despachos.show');
+    Route::get('/despachos/{despacho}/pdf', [DespachoController::class, 'generatePDF'])->name('despachos.pdf');
 });
 
 require __DIR__.'/auth.php';
