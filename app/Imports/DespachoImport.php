@@ -37,8 +37,7 @@ class DespachoImport implements ToCollection
                 'usuario_id' => $this->usuarioId,
             ]);
 
-            // Almacenar productos agrupados por código base
-            $lenguasAgrupadas = [];
+            $contadorLenguas = 0;
 
             // Procesar productos (a partir de la fila 14)
             for ($i = 14; $i < $rows->count(); $i++) {
@@ -53,6 +52,11 @@ class DespachoImport implements ToCollection
                 $partes = explode(' ', $codigoCompleto, 2);
                 $codigo = $partes[0] ?? $codigoCompleto;
 
+                // ✅ SOLO PROCESAR SI TERMINA EN -1001
+                if (!str_ends_with($codigo, '-1001')) {
+                    continue; // Ignorar -1002 y cualquier otro sufijo
+                }
+
                 // Obtener código base: 2601-11413-1001 -> 2601-11413
                 $codigoBase = $this->obtenerCodigoBase($codigo);
 
@@ -64,34 +68,24 @@ class DespachoImport implements ToCollection
                 $destinoEspecifico = trim($row[5] ?? '');
                 $fechaBeneficio = $this->parseFecha($row[6] ?? null);
 
-                // Agrupar por código base para evitar duplicados
-                if (!isset($lenguasAgrupadas[$codigoBase])) {
-                    $lenguasAgrupadas[$codigoBase] = [
-                        'codigo' => $codigoLengua,
-                        'destino' => $destinoEspecifico,
-                        'fecha' => $fechaBeneficio,
-                        'decomisos' => $decomisos,
-                    ];
-                }
-            }
-
-            // Guardar las lenguas (sin duplicados)
-            foreach ($lenguasAgrupadas as $lengua) {
+                // Crear la lengua
                 DespachoProducto::create([
                     'despacho_id' => $despacho->id,
-                    'codigo_producto' => $lengua['codigo'],
+                    'codigo_producto' => $codigoLengua,
                     'descripcion_producto' => 'LENGUA',
                     'peso_frio' => 0,
                     'peso_caliente' => 0,
                     'temperatura' => null,
-                    'decomisos' => $lengua['decomisos'],
-                    'destino_especifico' => $lengua['destino'],
-                    'fecha_beneficio' => $lengua['fecha'],
+                    'decomisos' => $decomisos,
+                    'destino_especifico' => $destinoEspecifico,
+                    'fecha_beneficio' => $fechaBeneficio,
                 ]);
+
+                $contadorLenguas++;
             }
 
-            // Actualizar cantidad de lenguas (1 por animal)
-            $despacho->update(['lenguas' => count($lenguasAgrupadas)]);
+            // Actualizar cantidad de lenguas (solo las que vienen de -1001)
+            $despacho->update(['lenguas' => $contadorLenguas]);
 
         } catch (\Exception $e) {
             throw new \Exception('Error al procesar el archivo: ' . $e->getMessage());
@@ -113,27 +107,6 @@ class DespachoImport implements ToCollection
         }
 
         return $codigo;
-    }
-
-    /**
-     * Parsear un valor decimal de forma segura
-     */
-    private function parseDecimal($valor)
-    {
-        if ($valor === null || $valor === '') {
-            return null;
-        }
-
-        $valor = (string)$valor;
-        $valor = str_replace(',', '.', $valor);
-        $valor = trim($valor);
-        $resultado = floatval($valor);
-
-        if ($resultado == 0 && !in_array($valor, ['0', '0.0', '0,0'])) {
-            return null;
-        }
-
-        return $resultado;
     }
 
     /**
