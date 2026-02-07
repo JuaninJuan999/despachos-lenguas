@@ -29,34 +29,34 @@
             width: 100%;
             max-width: 7in;
             margin: 0 auto;
-            padding: 15px; /* ✅ Aumentado de 5px a 15px */
+            padding: 15px;
         }
         
         /* HEADER */
         .header {
             text-align: center;
-            margin-bottom: 20px; /* ✅ Aumentado de 15px a 20px */
+            margin-bottom: 20px;
             border-bottom: 2px solid #000;
-            padding-bottom: 15px; /* ✅ Aumentado de 10px a 15px */
-            margin-top: 10px; /* ✅ NUEVO */
+            padding-bottom: 15px;
+            margin-top: 10px;
         }
         
         .header h1 {
             font-size: 16px;
-            margin-bottom: 8px; /* ✅ Aumentado de 5px a 8px */
+            margin-bottom: 8px;
         }
         
         .header p {
             font-size: 9px;
-            margin-bottom: 3px; /* ✅ NUEVO */
+            margin-bottom: 3px;
         }
         
         /* INFO GRID */
         .info-grid {
             display: table;
             width: 100%;
-            margin-bottom: 20px; /* ✅ Aumentado de 15px a 20px */
-            margin-top: 10px; /* ✅ NUEVO */
+            margin-bottom: 20px;
+            margin-top: 10px;
         }
         
         .info-row {
@@ -65,7 +65,7 @@
         
         .info-cell {
             display: table-cell;
-            padding: 8px; /* ✅ Aumentado de 5px a 8px */
+            padding: 8px;
             border: 1px solid #ccc;
             vertical-align: middle;
         }
@@ -84,21 +84,21 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px; /* ✅ Aumentado de 10px a 15px */
-            margin-bottom: 15px; /* ✅ NUEVO */
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         
         th {
             background-color: #2c3e50;
             color: white;
-            padding: 10px 8px; /* ✅ Aumentado de 8px 5px */
+            padding: 10px 8px;
             text-align: left;
             font-size: 9px;
             border: 1px solid #000;
         }
         
         td {
-            padding: 8px 8px; /* ✅ Aumentado de 6px 5px */
+            padding: 8px 8px;
             border: 1px solid #ddd;
             font-size: 8px;
         }
@@ -109,19 +109,19 @@
         
         /* FOOTER */
         .footer {
-            margin-top: 30px; /* ✅ Aumentado de 20px a 30px */
-            padding-top: 15px; /* ✅ Aumentado de 10px a 15px */
+            margin-top: 30px;
+            padding-top: 15px;
             border-top: 1px solid #ccc;
             text-align: center;
             font-size: 8px;
             color: #666;
-            margin-bottom: 10px; /* ✅ NUEVO */
+            margin-bottom: 10px;
         }
         
         .totales {
-            margin-top: 20px; /* ✅ Aumentado de 15px a 20px */
-            margin-bottom: 20px; /* ✅ NUEVO */
-            padding: 12px; /* ✅ Aumentado de 10px a 12px */
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 12px;
             background-color: #e8f4f8;
             border: 1px solid #2c3e50;
         }
@@ -129,13 +129,13 @@
         .totales p {
             font-size: 11px;
             font-weight: bold;
-            margin: 5px 0; /* ✅ Aumentado de 3px a 5px */
+            margin: 5px 0;
         }
         
         /* FIRMAS */
         .firma-section {
-            margin-top: 40px; /* ✅ NUEVO */
-            padding-top: 25px; /* ✅ NUEVO */
+            margin-top: 40px;
+            padding-top: 25px;
         }
     </style>
 </head>
@@ -175,7 +175,7 @@
             </div>
         </div>
         
-        <!-- TABLA DE PRODUCTOS - COLUMNAS REDUCIDAS -->
+        <!-- TABLA DE PRODUCTOS - SOLO LENGUAS (CÓDIGO -6000) -->
         <table>
             <thead>
                 <tr>
@@ -186,33 +186,30 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $totalLenguas = 0;
-                @endphp
-                
                 @foreach($despacho->productos as $producto)
-                    @php
-                        $totalLenguas++;
-                        
-                        // Formatear destino: mostrar desde el tercer "/" en adelante
-                        $destino = $producto->destino_especifico ?? '';
-                        if ($destino !== '') {
-                            $partes = explode('/', $destino);
-                            if (count($partes) >= 3) {
-                                $destinoFormateado = trim(implode('/', array_slice($partes, 2)));
+                    {{-- ✅ SOLO MOSTRAR LENGUAS (código termina en -6000) --}}
+                    @if(str_ends_with($producto->codigo_producto, '-6000'))
+                        @php
+                            // Formatear destino: mostrar desde el tercer "/" en adelante
+                            $destino = $producto->destino_especifico ?? '';
+                            if ($destino !== '') {
+                                $partes = explode('/', $destino);
+                                if (count($partes) >= 3) {
+                                    $destinoFormateado = trim(implode('/', array_slice($partes, 2)));
+                                } else {
+                                    $destinoFormateado = trim($destino);
+                                }
                             } else {
-                                $destinoFormateado = trim($destino);
+                                $destinoFormateado = '-';
                             }
-                        } else {
-                            $destinoFormateado = '-';
-                        }
-                    @endphp
-                    <tr>
-                        <td>{{ $producto->codigo_producto }}</td>
-                        <td>{{ $producto->descripcion_producto ?? '-' }}</td>
-                        <td>{{ $producto->fecha_beneficio ? $producto->fecha_beneficio->format('d/m/Y') : '-' }}</td>
-                        <td>{{ $destinoFormateado }}</td>
-                    </tr>
+                        @endphp
+                        <tr>
+                            <td>{{ $producto->codigo_producto }}</td>
+                            <td>{{ $producto->descripcion_producto ?? '-' }}</td>
+                            <td>{{ $producto->fecha_beneficio ? $producto->fecha_beneficio->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $destinoFormateado }}</td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -275,7 +272,7 @@
                 <div class="info-cell info-label">N° Destinos:</div>
                 <div class="info-cell info-value">
                     @php
-                        // Contar destinos únicos (SIN DUPLICADOS)
+                        // ✅ Contar destinos únicos DE TODOS LOS PRODUCTOS (lenguas Y colas)
                         $codigosUnicos = [];
                         foreach($despacho->productos as $producto) {
                             $destino = $producto->destino_especifico ?? '-';
@@ -298,7 +295,7 @@
             </div>
         </div>
         
-        <!-- TABLA DE DESTINOS ÚNICOS -->
+        <!-- TABLA DE DESTINOS ÚNICOS - TODOS LOS PRODUCTOS -->
         <table style="margin-top: 20px;">
             <thead>
                 <tr>
@@ -308,7 +305,7 @@
             </thead>
             <tbody>
                 @php
-                    // Agrupar TODOS los destinos únicos (incluyendo los que aparecen 1 sola vez)
+                    // ✅ Agrupar TODOS los destinos únicos (de lenguas Y colas)
                     $destinosAgrupados = [];
                     
                     foreach($despacho->productos as $producto) {
