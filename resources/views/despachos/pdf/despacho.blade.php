@@ -10,11 +10,13 @@
     margin: 0.75in;
 }
 
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 
 html, body {
     width: 100%;
@@ -24,6 +26,7 @@ html, body {
     font-size: 9px;
     color: #000;
 }
+
 
 .container {
     width: 100%;
@@ -205,7 +208,7 @@ html, body {
             </tbody>
         </table>
         
-                <!-- TOTALES SIMPLIFICADO -->
+        <!-- TOTALES SIMPLIFICADO -->
         <div class="totales">
             <p> Total de Lenguas: {{ $despacho->lenguas }}</p>
         </div>
@@ -235,5 +238,131 @@ html, body {
         </div>
         
     </div>
+    
+    <!-- ========================================== -->
+    <!-- PÁGINA 2: RESUMEN DE DESTINOS             -->
+    <!-- ========================================== -->
+    <div style="page-break-before: always;"></div>
+    
+    <div class="container">
+        
+        <!-- HEADER PÁGINA 2 -->
+        <div class="header">
+            <h1>📋 RESUMEN DE DESTINOS</h1>
+            <p>Despacho #{{ $despacho->id }}</p>
+        </div>
+        
+        <!-- INFORMACIÓN DEL CONDUCTOR Y VEHÍCULO -->
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-cell info-label">Conductor:</div>
+                <div class="info-cell info-value">{{ $despacho->conductor }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-cell info-label">Vehículo:</div>
+                <div class="info-cell info-value">{{ $despacho->placa_remolque }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-cell info-label">N° Destinos:</div>
+                <div class="info-cell info-value">
+                    @php
+                        // Contar destinos únicos (SIN DUPLICADOS)
+                        $codigosUnicos = [];
+                        foreach($despacho->productos as $producto) {
+                            $destino = $producto->destino_especifico ?? '-';
+                            $partes = explode('/', $destino);
+                            
+                            if (count($partes) >= 3) {
+                                $codigoDestino = trim($partes[2]);
+                                $codigo1002 = trim($partes[1] ?? '');
+                                $clave = $codigoDestino . '|' . $codigo1002;
+                            } else {
+                                $clave = trim($partes[0] ?? '-');
+                            }
+                            
+                            $codigosUnicos[$clave] = true;
+                        }
+                        $destinosUnicos = count($codigosUnicos);
+                    @endphp
+                    {{ $destinosUnicos }}
+                </div>
+            </div>
+        </div>
+        
+                <!-- TABLA DE DESTINOS ÚNICOS -->
+        <table style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th style="width: 20%; background-color: #2d5016;">Destino</th>
+                    <th style="width: 80%; background-color: #2d5016;">Dirección</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // Agrupar TODOS los destinos únicos (incluyendo los que aparecen 1 sola vez)
+                    $destinosAgrupados = [];
+                    
+                    foreach($despacho->productos as $producto) {
+                        $destino = $producto->destino_especifico ?? '-';
+                        $partes = explode('/', $destino);
+                        
+                        if (count($partes) >= 3) {
+                            $codigoDestino = trim($partes[2]); // SS1, 06400, MPV, etc
+                            $codigo1002 = trim($partes[1] ?? ''); // 1001, 1002, etc
+                            $direccion = trim(implode(' ', array_slice($partes, 3))); // Dirección completa
+                        } else {
+                            $codigoDestino = trim($partes[0] ?? '-');
+                            $codigo1002 = '';
+                            $direccion = $destino;
+                        }
+                        
+                        // CLAVE ÚNICA: combinación de código destino + código 1002
+                        $clave = $codigoDestino . '|' . $codigo1002;
+                        
+                        // Agregar TODOS los destinos únicos (no importa cuántas veces aparezcan)
+                        if (!isset($destinosAgrupados[$clave])) {
+                            $destinosAgrupados[$clave] = [
+                                'codigo' => $codigoDestino,
+                                'direccion' => $direccion,
+                                'orden' => $codigoDestino // Para ordenar alfabéticamente
+                            ];
+                        }
+                    }
+                    
+                    // Ordenar alfabéticamente por código de destino
+                    uasort($destinosAgrupados, function($a, $b) {
+                        return strcmp($a['orden'], $b['orden']);
+                    });
+                @endphp
+                
+                @if(count($destinosAgrupados) > 0)
+                    @foreach($destinosAgrupados as $destino)
+                        <tr>
+                            <td style="font-weight: bold; text-align: center;">
+                                {{ $destino['codigo'] }}
+                            </td>
+                            <td>
+                                {{ $destino['direccion'] }}
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="2" style="text-align: center; padding: 20px;">
+                            No hay destinos registrados
+                        </td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+
+        
+        <!-- FOOTER PÁGINA 2 -->
+        <div class="footer">
+            <p>Resumen generado: {{ now()->format('d/m/Y H:i:s') }}</p>
+        </div>
+        
+    </div>
+    
 </body>
 </html>
