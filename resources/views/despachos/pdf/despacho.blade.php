@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despacho #{{ $despacho->id }}</title>
     <style>
         @page {
@@ -34,11 +33,30 @@
         
         /* HEADER */
         .header {
-            text-align: center;
+            display: table;
+            width: 100%;
             margin-bottom: 20px;
             border-bottom: 2px solid #000;
             padding-bottom: 15px;
             margin-top: 10px;
+        }
+        
+        .logo-container {
+            display: table-cell;
+            vertical-align: middle;
+            width: 80px;
+            padding-right: 15px;
+        }
+        
+        .logo-container img {
+            width: 70px;
+            height: auto;
+        }
+        
+        .header-content {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
         }
         
         .header h1 {
@@ -88,13 +106,15 @@
             margin-bottom: 15px;
         }
         
+        /* HEADER TABLA - COLOR VERDE INSTITUCIONAL */
         th {
-            background-color: #2c3e50;
-            color: white;
+            background-color: #7ce8ad;
+            color: #000;
             padding: 10px 8px;
             text-align: left;
             font-size: 9px;
             border: 1px solid #000;
+            font-weight: bold;
         }
         
         td {
@@ -107,29 +127,21 @@
             background-color: #f9f9f9;
         }
         
-        /* FOOTER */
-        .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #ccc;
-            text-align: center;
-            font-size: 8px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
+        /* TOTALES - COLOR ROSA INSTITUCIONAL */
         .totales {
             margin-top: 20px;
             margin-bottom: 20px;
             padding: 12px;
-            background-color: #e8f4f8;
-            border: 1px solid #2c3e50;
+            background-color: #f9dff8;
+            border: 2px solid #f9dff8;
+            border-radius: 4px;
         }
         
         .totales p {
             font-size: 11px;
             font-weight: bold;
             margin: 5px 0;
+            color: #000;
         }
         
         /* FIRMAS */
@@ -137,16 +149,28 @@
             margin-top: 40px;
             padding-top: 25px;
         }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         
-        <!-- HEADER -->
+        <!-- HEADER CON LOGO -->
         <div class="header">
-            <h1>🚛 DESPACHO DE LENGUAS</h1>
-            <p>Sistema de Gestión de Despachos - Reporte #{{ $despacho->id }}</p>
-            <p>Generado: {{ now()->format('d/m/Y H:i:s') }}</p>
+            <div class="logo-container">
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo.png'))) }}" alt="Logo">
+            </div>
+            <div class="header-content">
+                <h1> DESPACHO DE LENGUAS</h1>
+            </div>
         </div>
         
         <!-- INFORMACIÓN GENERAL -->
@@ -175,7 +199,7 @@
             </div>
         </div>
         
-        <!-- TABLA DE PRODUCTOS - SOLO LENGUAS (CÓDIGO -6000) -->
+        <!-- TABLA DE PRODUCTOS - SOLO LENGUAS -->
         <table>
             <thead>
                 <tr>
@@ -187,10 +211,8 @@
             </thead>
             <tbody>
                 @foreach($despacho->productos as $producto)
-                    {{-- ✅ SOLO MOSTRAR LENGUAS (código termina en -6000) --}}
                     @if(str_ends_with($producto->codigo_producto, '-6000'))
                         @php
-                            // Formatear destino: mostrar desde el tercer "/" en adelante
                             $destino = $producto->destino_especifico ?? '';
                             if ($destino !== '') {
                                 $partes = explode('/', $destino);
@@ -213,13 +235,7 @@
                 @endforeach
             </tbody>
         </table>
-        
-        <!-- TOTALES SIMPLIFICADO -->
-        <div class="totales">
-            <p>Total de Lenguas: {{ $despacho->lenguas }}</p>
-        </div>
-        
-        <!-- SECCIÓN DE FIRMAS -->
+        <!-- FIRMAS -->
         <div class="firma-section">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
@@ -244,130 +260,5 @@
         </div>
         
     </div>
-    
-    <!-- ========================================== -->
-    <!-- PÁGINA 2: RESUMEN DE DESTINOS             -->
-    <!-- ========================================== -->
-    <div style="page-break-before: always;"></div>
-    
-    <div class="container">
-        
-        <!-- HEADER PÁGINA 2 -->
-        <div class="header">
-            <h1>📋 RESUMEN DE DESTINOS</h1>
-            <p>Despacho #{{ $despacho->id }}</p>
-        </div>
-        
-        <!-- INFORMACIÓN DEL CONDUCTOR Y VEHÍCULO -->
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-cell info-label">Conductor:</div>
-                <div class="info-cell info-value">{{ $despacho->conductor }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-cell info-label">Vehículo:</div>
-                <div class="info-cell info-value">{{ $despacho->placa_remolque }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-cell info-label">N° Destinos:</div>
-                <div class="info-cell info-value">
-                    @php
-                        // ✅ Contar destinos únicos DE TODOS LOS PRODUCTOS (lenguas Y colas)
-                        $codigosUnicos = [];
-                        foreach($despacho->productos as $producto) {
-                            $destino = $producto->destino_especifico ?? '-';
-                            $partes = explode('/', $destino);
-                            
-                            if (count($partes) >= 3) {
-                                $codigoDestino = trim($partes[2]);
-                                $codigo1002 = trim($partes[1] ?? '');
-                                $clave = $codigoDestino . '|' . $codigo1002;
-                            } else {
-                                $clave = trim($partes[0] ?? '-');
-                            }
-                            
-                            $codigosUnicos[$clave] = true;
-                        }
-                        $destinosUnicos = count($codigosUnicos);
-                    @endphp
-                    {{ $destinosUnicos }}
-                </div>
-            </div>
-        </div>
-        
-        <!-- TABLA DE DESTINOS ÚNICOS - TODOS LOS PRODUCTOS -->
-        <table style="margin-top: 20px;">
-            <thead>
-                <tr>
-                    <th style="width: 20%; background-color: #2d5016;">Destino</th>
-                    <th style="width: 80%; background-color: #2d5016;">Dirección</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    // ✅ Agrupar TODOS los destinos únicos (de lenguas Y colas)
-                    $destinosAgrupados = [];
-                    
-                    foreach($despacho->productos as $producto) {
-                        $destino = $producto->destino_especifico ?? '-';
-                        $partes = explode('/', $destino);
-                        
-                        if (count($partes) >= 3) {
-                            $codigoDestino = trim($partes[2]); // SS1, 06400, MPV, etc
-                            $codigo1002 = trim($partes[1] ?? ''); // 1001, 1002, etc
-                            $direccion = trim(implode(' ', array_slice($partes, 3))); // Dirección completa
-                        } else {
-                            $codigoDestino = trim($partes[0] ?? '-');
-                            $codigo1002 = '';
-                            $direccion = $destino;
-                        }
-                        
-                        // CLAVE ÚNICA: combinación de código destino + código 1002
-                        $clave = $codigoDestino . '|' . $codigo1002;
-                        
-                        // Agregar TODOS los destinos únicos (no importa cuántas veces aparezcan)
-                        if (!isset($destinosAgrupados[$clave])) {
-                            $destinosAgrupados[$clave] = [
-                                'codigo' => $codigoDestino,
-                                'direccion' => $direccion,
-                                'orden' => $codigoDestino // Para ordenar alfabéticamente
-                            ];
-                        }
-                    }
-                    
-                    // Ordenar alfabéticamente por código de destino
-                    uasort($destinosAgrupados, function($a, $b) {
-                        return strcmp($a['orden'], $b['orden']);
-                    });
-                @endphp
-                
-                @if(count($destinosAgrupados) > 0)
-                    @foreach($destinosAgrupados as $destino)
-                        <tr>
-                            <td style="font-weight: bold; text-align: center;">
-                                {{ $destino['codigo'] }}
-                            </td>
-                            <td>
-                                {{ $destino['direccion'] }}
-                            </td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="2" style="text-align: center; padding: 20px;">
-                            No hay destinos registrados
-                        </td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
-        
-        <!-- FOOTER PÁGINA 2 -->
-        <div class="footer">
-            <p>Resumen generado: {{ now()->format('d/m/Y H:i:s') }}</p>
-        </div>
-        
-    </div>
-    
 </body>
 </html>
