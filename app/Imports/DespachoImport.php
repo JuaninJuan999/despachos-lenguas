@@ -39,7 +39,7 @@ class DespachoImport implements ToCollection
 
             $contadorLenguas = 0;
 
-            // Procesar productos (a partir de la fila 14)
+            // ✅ PROCESAR TODOS LOS PRODUCTOS (no solo -1001)
             for ($i = 14; $i < $rows->count(); $i++) {
                 $row = $rows[$i];
 
@@ -52,27 +52,38 @@ class DespachoImport implements ToCollection
                 $partes = explode(' ', $codigoCompleto, 2);
                 $codigo = $partes[0] ?? $codigoCompleto;
 
-                // ✅ SOLO PROCESAR SI TERMINA EN -1001
-                if (!str_ends_with($codigo, '-1001')) {
-                    continue; // Ignorar -1002 y cualquier otro sufijo
+                // Validar formato: XXXX-XXXXX-XXXX
+                if (!preg_match('/^\d{4}-\d{5}-\d{4}$/', $codigo)) {
+                    continue;
                 }
 
                 // Obtener código base: 2601-11413-1001 -> 2601-11413
                 $codigoBase = $this->obtenerCodigoBase($codigo);
 
-                // Convertir a código lengua: 2601-11413 -> 2601-11413-6000
-                $codigoLengua = $codigoBase . '-6000';
+                // ✅ DETERMINAR SI ES LENGUA (-1001) O COLA (-1002)
+                $esLengua = str_ends_with($codigo, '-1001');
+                
+                if ($esLengua) {
+                    // Convertir -1001 a -6000 (solo lenguas)
+                    $codigoFinal = $codigoBase . '-6000';
+                    $descripcion = 'LENGUA';
+                    $contadorLenguas++;
+                } else {
+                    // Mantener código original para -1002 y otros
+                    $codigoFinal = $codigo;
+                    $descripcion = str_ends_with($codigo, '-1002') ? 'COLA' : 'PRODUCTO';
+                }
 
                 // Parsear valores
                 $decomisos = trim($row[4] ?? '');
                 $destinoEspecifico = trim($row[5] ?? '');
                 $fechaBeneficio = $this->parseFecha($row[6] ?? null);
 
-                // Crear la lengua
+                // ✅ GUARDAR TODOS LOS PRODUCTOS (lenguas Y colas)
                 DespachoProducto::create([
                     'despacho_id' => $despacho->id,
-                    'codigo_producto' => $codigoLengua,
-                    'descripcion_producto' => 'LENGUA',
+                    'codigo_producto' => $codigoFinal,
+                    'descripcion_producto' => $descripcion,
                     'peso_frio' => 0,
                     'peso_caliente' => 0,
                     'temperatura' => null,
@@ -80,8 +91,6 @@ class DespachoImport implements ToCollection
                     'destino_especifico' => $destinoEspecifico,
                     'fecha_beneficio' => $fechaBeneficio,
                 ]);
-
-                $contadorLenguas++;
             }
 
             // Actualizar cantidad de lenguas (solo las que vienen de -1001)

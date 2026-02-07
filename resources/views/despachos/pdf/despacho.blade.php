@@ -6,57 +6,57 @@
     <title>Despacho #{{ $despacho->id }}</title>
     <style>
         @page {
-    size: letter;
-    margin: 0.75in;
-}
+            size: letter;
+            margin: 0.75in;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        html, body {
+            width: 100%;
+            max-width: 8.5in;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            color: #000;
+        }
 
-
-html, body {
-    width: 100%;
-    max-width: 8.5in;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-    font-size: 9px;
-    color: #000;
-}
-
-
-.container {
-    width: 100%;
-    max-width: 7in;
-    margin: 0 auto;
-    padding: 5px;
-}
+        .container {
+            width: 100%;
+            max-width: 7in;
+            margin: 0 auto;
+            padding: 15px; /* ✅ Aumentado de 5px a 15px */
+        }
         
         /* HEADER */
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* ✅ Aumentado de 15px a 20px */
             border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            padding-bottom: 15px; /* ✅ Aumentado de 10px a 15px */
+            margin-top: 10px; /* ✅ NUEVO */
         }
         
         .header h1 {
             font-size: 16px;
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* ✅ Aumentado de 5px a 8px */
         }
         
         .header p {
             font-size: 9px;
+            margin-bottom: 3px; /* ✅ NUEVO */
         }
         
         /* INFO GRID */
         .info-grid {
             display: table;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* ✅ Aumentado de 15px a 20px */
+            margin-top: 10px; /* ✅ NUEVO */
         }
         
         .info-row {
@@ -65,7 +65,7 @@ html, body {
         
         .info-cell {
             display: table-cell;
-            padding: 5px;
+            padding: 8px; /* ✅ Aumentado de 5px a 8px */
             border: 1px solid #ccc;
             vertical-align: middle;
         }
@@ -84,20 +84,21 @@ html, body {
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px; /* ✅ Aumentado de 10px a 15px */
+            margin-bottom: 15px; /* ✅ NUEVO */
         }
         
         th {
             background-color: #2c3e50;
             color: white;
-            padding: 8px 5px;
+            padding: 10px 8px; /* ✅ Aumentado de 8px 5px */
             text-align: left;
             font-size: 9px;
             border: 1px solid #000;
         }
         
         td {
-            padding: 6px 5px;
+            padding: 8px 8px; /* ✅ Aumentado de 6px 5px */
             border: 1px solid #ddd;
             font-size: 8px;
         }
@@ -108,17 +109,19 @@ html, body {
         
         /* FOOTER */
         .footer {
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 30px; /* ✅ Aumentado de 20px a 30px */
+            padding-top: 15px; /* ✅ Aumentado de 10px a 15px */
             border-top: 1px solid #ccc;
             text-align: center;
             font-size: 8px;
             color: #666;
+            margin-bottom: 10px; /* ✅ NUEVO */
         }
         
         .totales {
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 20px; /* ✅ Aumentado de 15px a 20px */
+            margin-bottom: 20px; /* ✅ NUEVO */
+            padding: 12px; /* ✅ Aumentado de 10px a 12px */
             background-color: #e8f4f8;
             border: 1px solid #2c3e50;
         }
@@ -126,7 +129,13 @@ html, body {
         .totales p {
             font-size: 11px;
             font-weight: bold;
-            margin: 3px 0;
+            margin: 5px 0; /* ✅ Aumentado de 3px a 5px */
+        }
+        
+        /* FIRMAS */
+        .firma-section {
+            margin-top: 40px; /* ✅ NUEVO */
+            padding-top: 25px; /* ✅ NUEVO */
         }
     </style>
 </head>
@@ -210,20 +219,20 @@ html, body {
         
         <!-- TOTALES SIMPLIFICADO -->
         <div class="totales">
-            <p> Total de Lenguas: {{ $despacho->lenguas }}</p>
+            <p>Total de Lenguas: {{ $despacho->lenguas }}</p>
         </div>
         
         <!-- SECCIÓN DE FIRMAS -->
-        <div style="margin-top: 30px; padding-top: 20px;">
+        <div class="firma-section">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                    <td style="width: 50%; text-align: center; padding: 40px 10px 10px 10px; border: none;">
-                        <div style="border-top: 1px solid #000; padding-top: 5px;">
+                    <td style="width: 50%; text-align: center; padding: 50px 15px 15px 15px; border: none;">
+                        <div style="border-top: 1px solid #000; padding-top: 8px;">
                             <strong>Entrega</strong>
                         </div>
                     </td>
-                    <td style="width: 50%; text-align: center; padding: 40px 10px 10px 10px; border: none;">
-                        <div style="border-top: 1px solid #000; padding-top: 5px;">
+                    <td style="width: 50%; text-align: center; padding: 50px 15px 15px 15px; border: none;">
+                        <div style="border-top: 1px solid #000; padding-top: 8px;">
                             <strong>Recibe</strong>
                         </div>
                     </td>
@@ -289,7 +298,7 @@ html, body {
             </div>
         </div>
         
-                <!-- TABLA DE DESTINOS ÚNICOS -->
+        <!-- TABLA DE DESTINOS ÚNICOS -->
         <table style="margin-top: 20px;">
             <thead>
                 <tr>
@@ -355,7 +364,6 @@ html, body {
                 @endif
             </tbody>
         </table>
-
         
         <!-- FOOTER PÁGINA 2 -->
         <div class="footer">
