@@ -13,6 +13,13 @@
                     📄 Descargar PDF
                 </a>
                 <a 
+                    href="{{ route('despachos.llaves', $despacho->id) }}"
+                    class="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg transition duration-200 shadow-md"
+                    target="_blank"
+                >
+                    🔑 Generar Llaves
+                </a>
+                <a 
                     href="{{ route('despachos.index') }}"
                     class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition duration-200"
                 >

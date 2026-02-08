@@ -7,6 +7,7 @@ use App\Models\Despacho;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\ImagenLlavesService;
 
 class DespachoController extends Controller
 {
@@ -80,5 +81,35 @@ class DespachoController extends Controller
             ->setPaper('a4', 'landscape');
 
         return $pdf->download('despacho-' . $despacho->id . '.pdf');
+    }
+
+    /**
+     * Generar imagen PNG con llaves (destinos únicos).
+     */
+    public function generateImagenLlaves(Despacho $despacho, ImagenLlavesService $imagenService)
+    {
+        // Verificar autorización
+        if ($despacho->usuario_id !== auth()->id()) {
+            abort(403, 'No tienes permiso para generar llaves de este despacho');
+        }
+
+        try {
+            // Cargar relación de productos
+            $despacho->load('productos');
+
+            // Limpiar imágenes anteriores
+            $imagenService->limpiarImagenesAntiguas($despacho->id);
+
+            // Generar nueva imagen
+            $rutaImagen = $imagenService->generarImagenLlaves($despacho);
+
+            // Descargar la imagen
+            return response()->download(
+                storage_path('app/public/' . $rutaImagen),
+                'llaves-despacho-' . $despacho->id . '.png'
+            )->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al generar imagen: ' . $e->getMessage());
+        }
     }
 }

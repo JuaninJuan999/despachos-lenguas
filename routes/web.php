@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/despachos', [DespachoController::class, 'store'])->name('despachos.store');
     Route::get('/despachos/{despacho}', [DespachoController::class, 'show'])->name('despachos.show');
     Route::get('/despachos/{despacho}/pdf', [DespachoController::class, 'generatePDF'])->name('despachos.pdf');
+    Route::get('/despachos/{despacho}/llaves', [DespachoController::class, 'generateImagenLlaves'])->name('despachos.llaves');
 });
 
 require __DIR__.'/auth.php';
