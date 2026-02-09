@@ -78,7 +78,8 @@ class DespachoController extends Controller
         $despacho->load('productos');
 
         $pdf = Pdf::loadView('despachos.pdf.despacho', compact('despacho'))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape')
+            ->setOption('defaultFont', 'Roboto');
 
         return $pdf->download('despacho-' . $despacho->id . '.pdf');
     }

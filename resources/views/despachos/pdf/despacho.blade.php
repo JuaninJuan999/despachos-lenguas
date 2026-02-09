@@ -255,8 +255,7 @@
         
         <!-- FOOTER -->
         <div class="footer">
-            <p>Documento generado automáticamente por el Sistema de Despachos</p>
-            <p>Archivo original: {{ $despacho->archivo_original }}</p>
+            <p>Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas</p>
         </div>
         
     </div>
