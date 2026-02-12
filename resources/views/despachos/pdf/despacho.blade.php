@@ -20,7 +20,7 @@
             max-width: 8.5in;
             margin: 0 auto;
             font-family: Arial, sans-serif;
-            font-size: 9px;
+            font-size: 11px;
             color: #000;
         }
 
@@ -60,12 +60,12 @@
         }
         
         .header h1 {
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 8px;
         }
         
         .header p {
-            font-size: 9px;
+            font-size: 11px;
             margin-bottom: 3px;
         }
         
@@ -92,10 +92,12 @@
             font-weight: bold;
             background-color: #f0f0f0;
             width: 30%;
+            font-size: 11px;
         }
         
         .info-value {
             width: 70%;
+            font-size: 11px;
         }
         
         /* TABLE */
@@ -112,7 +114,7 @@
             color: #000;
             padding: 10px 8px;
             text-align: left;
-            font-size: 9px;
+            font-size: 11px;
             border: 1px solid #000;
             font-weight: bold;
         }
@@ -120,7 +122,7 @@
         td {
             padding: 8px 8px;
             border: 1px solid #ddd;
-            font-size: 8px;
+            font-size: 10px;
         }
         
         tr:nth-child(even) {
@@ -138,7 +140,7 @@
         }
         
         .totales p {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             margin: 5px 0;
             color: #000;
@@ -155,7 +157,7 @@
             padding-top: 15px;
             border-top: 1px solid #ccc;
             text-align: center;
-            font-size: 8px;
+            font-size: 9px;
             color: #666;
         }
     </style>
@@ -200,7 +202,7 @@
         </div>
         <!-- NOTA INFORMATIVA -->
 <div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
-    <p style="font-size: 9px; line-height: 1.4; margin: 0;">
+    <p style="font-size: 10px; line-height: 1.4; margin: 0;">
         <strong>Nota:</strong> Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas.
     </p>
 </div>
@@ -215,28 +217,35 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($despacho->productos as $producto)
-                    @if(str_ends_with($producto->codigo_producto, '-6000'))
-                        @php
-                            $destino = $producto->destino_especifico ?? '';
-                            if ($destino !== '') {
-                                $partes = explode('/', $destino);
-                                if (count($partes) >= 3) {
-                                    $destinoFormateado = trim(implode('/', array_slice($partes, 2)));
-                                } else {
-                                    $destinoFormateado = trim($destino);
-                                }
+                @php
+                    // Filtrar y ordenar productos
+                    $productosLenguas = collect($despacho->productos)
+                        ->filter(function($producto) {
+                            return str_ends_with($producto->codigo_producto, '-6000');
+                        })
+                        ->sortBy('codigo_producto') // Ordenar de menor a mayor por código
+                        ->values();
+                @endphp
+                @foreach($productosLenguas as $producto)
+                    @php
+                        $destino = $producto->destino_especifico ?? '';
+                        if ($destino !== '') {
+                            $partes = explode('/', $destino);
+                            if (count($partes) >= 3) {
+                                $destinoFormateado = trim(implode('/', array_slice($partes, 2)));
                             } else {
-                                $destinoFormateado = '-';
+                                $destinoFormateado = trim($destino);
                             }
-                        @endphp
-                        <tr>
-                            <td>{{ $producto->codigo_producto }}</td>
-                            <td>{{ $producto->descripcion_producto ?? '-' }}</td>
-                            <td>{{ $producto->fecha_beneficio ? $producto->fecha_beneficio->format('d/m/Y') : '-' }}</td>
-                            <td>{{ $destinoFormateado }}</td>
-                        </tr>
-                    @endif
+                        } else {
+                            $destinoFormateado = '-';
+                        }
+                    @endphp
+                    <tr>
+                        <td>{{ $producto->codigo_producto }}</td>
+                        <td>{{ $producto->descripcion_producto ?? '-' }}</td>
+                        <td>{{ $producto->fecha_beneficio ? $producto->fecha_beneficio->format('d/m/Y') : '-' }}</td>
+                        <td>{{ $destinoFormateado }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
