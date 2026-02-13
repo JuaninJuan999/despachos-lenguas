@@ -29,7 +29,7 @@
                     disabled
                     title="Selecciona productos en la tabla para habilitar"
                 >
-                    📄 PDF Personalizado
+                    📄 PDF Adicionales
                 </button>
                 <button 
                     type="button"
@@ -38,7 +38,7 @@
                     disabled
                     title="Selecciona productos en la tabla para habilitar"
                 >
-                    🔑 Llaves Personalizadas
+                    🔑 Llaves Adicionales
                 </button>
 
                 {{-- Botón Volver --}}
