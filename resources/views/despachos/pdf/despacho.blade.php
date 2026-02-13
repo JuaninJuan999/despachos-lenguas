@@ -20,7 +20,11 @@
             max-width: 8.5in;
             margin: 0 auto;
             font-family: Arial, sans-serif;
+<<<<<<< HEAD
             font-size: 11px;
+=======
+            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
+>>>>>>> 1e56d1f (Avance)
             color: #000;
         }
 
@@ -60,12 +64,20 @@
         }
         
         .header h1 {
+<<<<<<< HEAD
             font-size: 18px;
+=======
+            font-size: 18px; /* 🔴 CAMBIADO: de 16px a 18px */
+>>>>>>> 1e56d1f (Avance)
             margin-bottom: 8px;
         }
         
         .header p {
+<<<<<<< HEAD
             font-size: 11px;
+=======
+            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
+>>>>>>> 1e56d1f (Avance)
             margin-bottom: 3px;
         }
         
@@ -86,6 +98,7 @@
             padding: 8px;
             border: 1px solid #ccc;
             vertical-align: middle;
+            font-size: 11px; /* 🔴 AGREGADO: tamaño de letra */
         }
         
         .info-label {
@@ -114,7 +127,11 @@
             color: #000;
             padding: 10px 8px;
             text-align: left;
+<<<<<<< HEAD
             font-size: 11px;
+=======
+            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
+>>>>>>> 1e56d1f (Avance)
             border: 1px solid #000;
             font-weight: bold;
         }
@@ -122,7 +139,11 @@
         td {
             padding: 8px 8px;
             border: 1px solid #ddd;
+<<<<<<< HEAD
             font-size: 10px;
+=======
+            font-size: 10px; /* 🔴 CAMBIADO: de 8px a 10px */
+>>>>>>> 1e56d1f (Avance)
         }
         
         tr:nth-child(even) {
@@ -140,7 +161,11 @@
         }
         
         .totales p {
+<<<<<<< HEAD
             font-size: 12px;
+=======
+            font-size: 12px; /* 🔴 CAMBIADO: de 11px a 12px */
+>>>>>>> 1e56d1f (Avance)
             font-weight: bold;
             margin: 5px 0;
             color: #000;
@@ -157,7 +182,11 @@
             padding-top: 15px;
             border-top: 1px solid #ccc;
             text-align: center;
+<<<<<<< HEAD
             font-size: 9px;
+=======
+            font-size: 9px; /* 🔴 CAMBIADO: de 8px a 9px */
+>>>>>>> 1e56d1f (Avance)
             color: #666;
         }
     </style>
@@ -200,12 +229,22 @@
                 <div class="info-cell info-value">{{ $despacho->lenguas }}</div>
             </div>
         </div>
+        
         <!-- NOTA INFORMATIVA -->
+<<<<<<< HEAD
 <div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
     <p style="font-size: 10px; line-height: 1.4; margin: 0;">
         <strong>Nota:</strong> Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas.
     </p>
 </div>
+=======
+        <div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
+            <p style="font-size: 10px; line-height: 1.4; margin: 0;"> <!-- 🔴 CAMBIADO: de 9px a 10px -->
+                <strong>Nota:</strong> Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas.
+            </p>
+        </div>
+        
+>>>>>>> 1e56d1f (Avance)
         <!-- TABLA DE PRODUCTOS - SOLO LENGUAS -->
         <table>
             <thead>
@@ -217,15 +256,27 @@
                 </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
                 @php
                     // Filtrar y ordenar productos
+=======
+                {{-- 🔴 NUEVO: Filtrar y ordenar productos --}}
+                @php
+>>>>>>> 1e56d1f (Avance)
                     $productosLenguas = collect($despacho->productos)
                         ->filter(function($producto) {
                             return str_ends_with($producto->codigo_producto, '-6000');
                         })
+<<<<<<< HEAD
                         ->sortBy('codigo_producto') // Ordenar de menor a mayor por código
                         ->values();
                 @endphp
+=======
+                        ->sortBy('codigo_producto') // Ordenar de menor a mayor
+                        ->values();
+                @endphp
+                
+>>>>>>> 1e56d1f (Avance)
                 @foreach($productosLenguas as $producto)
                     @php
                         $destino = $producto->destino_especifico ?? '';
@@ -249,6 +300,7 @@
                 @endforeach
             </tbody>
         </table>
+        
         <!-- FIRMAS -->
         <div class="firma-section">
             <table style="width: 100%; border-collapse: collapse;">
