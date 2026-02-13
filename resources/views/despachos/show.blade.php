@@ -216,100 +216,159 @@
         </div>
     </div>
 
-    @push('scripts')
+    {{-- 🔴 SCRIPT MOVIDO AQUÍ (fuera de @push) --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('.checkbox-producto');
-            const checkboxMaestro = document.getElementById('checkboxMaestro');
-            const btnSeleccionarTodos = document.getElementById('btnSeleccionarTodos');
-            const btnDeseleccionarTodos = document.getElementById('btnDeseleccionarTodos');
-            const contadorSeleccionados = document.getElementById('contadorSeleccionados');
-            const btnPdfPersonalizado = document.getElementById('btnPdfPersonalizado');
-            const btnLlavesPersonalizadas = document.getElementById('btnLlavesPersonalizadas');
+        (function() {
+            console.log('🔍 Script cargado - Iniciando...');
+            
+            function inicializarSeleccion() {
+                const checkboxes = document.querySelectorAll('.checkbox-producto');
+                const checkboxMaestro = document.getElementById('checkboxMaestro');
+                const btnSeleccionarTodos = document.getElementById('btnSeleccionarTodos');
+                const btnDeseleccionarTodos = document.getElementById('btnDeseleccionarTodos');
+                const contadorSeleccionados = document.getElementById('contadorSeleccionados');
+                const btnPdfPersonalizado = document.getElementById('btnPdfPersonalizado');
+                const btnLlavesPersonalizadas = document.getElementById('btnLlavesPersonalizadas');
 
-            // Actualizar contador y botones
-            function actualizarEstado() {
-                const seleccionados = Array.from(checkboxes).filter(cb => cb.checked);
-                const cantidad = seleccionados.length;
-                
-                contadorSeleccionados.textContent = `${cantidad} producto${cantidad !== 1 ? 's' : ''} seleccionado${cantidad !== 1 ? 's' : ''}`;
-                
-                // Habilitar/deshabilitar botones
-                const haySeleccion = cantidad > 0;
-                btnPdfPersonalizado.disabled = !haySeleccion;
-                btnLlavesPersonalizadas.disabled = !haySeleccion;
-                
-                // Actualizar checkbox maestro
-                if (cantidad === 0) {
-                    checkboxMaestro.checked = false;
-                    checkboxMaestro.indeterminate = false;
-                } else if (cantidad === checkboxes.length) {
-                    checkboxMaestro.checked = true;
-                    checkboxMaestro.indeterminate = false;
-                } else {
-                    checkboxMaestro.checked = false;
-                    checkboxMaestro.indeterminate = true;
+                console.log('📦 Checkboxes encontrados:', checkboxes.length);
+                console.log('🟪 Botón PDF:', btnPdfPersonalizado);
+                console.log('🟦 Botón Llaves:', btnLlavesPersonalizadas);
+
+                if (checkboxes.length === 0) {
+                    console.error('❌ No se encontraron checkboxes');
+                    return;
                 }
+
+                // Actualizar contador y botones
+                function actualizarEstado() {
+                    const seleccionados = Array.from(checkboxes).filter(cb => cb.checked);
+                    const cantidad = seleccionados.length;
+                    
+                    console.log('✅ Productos seleccionados:', cantidad);
+                    
+                    if (contadorSeleccionados) {
+                        contadorSeleccionados.textContent = `${cantidad} producto${cantidad !== 1 ? 's' : ''} seleccionado${cantidad !== 1 ? 's' : ''}`;
+                    }
+                    
+                    // Habilitar/deshabilitar botones
+                    const haySeleccion = cantidad > 0;
+                    
+                    if (btnPdfPersonalizado) {
+                        btnPdfPersonalizado.disabled = !haySeleccion;
+                        console.log('🟪 PDF habilitado:', !btnPdfPersonalizado.disabled);
+                    }
+                    
+                    if (btnLlavesPersonalizadas) {
+                        btnLlavesPersonalizadas.disabled = !haySeleccion;
+                        console.log('🟦 Llaves habilitadas:', !btnLlavesPersonalizadas.disabled);
+                    }
+                    
+                    // Actualizar checkbox maestro
+                    if (checkboxMaestro) {
+                        if (cantidad === 0) {
+                            checkboxMaestro.checked = false;
+                            checkboxMaestro.indeterminate = false;
+                        } else if (cantidad === checkboxes.length) {
+                            checkboxMaestro.checked = true;
+                            checkboxMaestro.indeterminate = false;
+                        } else {
+                            checkboxMaestro.checked = false;
+                            checkboxMaestro.indeterminate = true;
+                        }
+                    }
+                }
+
+                // Checkbox maestro
+                if (checkboxMaestro) {
+                    checkboxMaestro.addEventListener('change', function() {
+                        console.log('🎯 Checkbox maestro clickeado');
+                        checkboxes.forEach(cb => cb.checked = this.checked);
+                        actualizarEstado();
+                    });
+                }
+
+                // Checkboxes individuales
+                checkboxes.forEach((cb, index) => {
+                    cb.addEventListener('change', function() {
+                        console.log(`🔲 Checkbox ${index} cambiado a:`, this.checked);
+                        actualizarEstado();
+                    });
+                });
+
+                // Botón seleccionar todos
+                if (btnSeleccionarTodos) {
+                    btnSeleccionarTodos.addEventListener('click', function() {
+                        console.log('✅ Seleccionar todos');
+                        checkboxes.forEach(cb => cb.checked = true);
+                        actualizarEstado();
+                    });
+                }
+
+                // Botón deseleccionar todos
+                if (btnDeseleccionarTodos) {
+                    btnDeseleccionarTodos.addEventListener('click', function() {
+                        console.log('❌ Deseleccionar todos');
+                        checkboxes.forEach(cb => cb.checked = false);
+                        actualizarEstado();
+                    });
+                }
+
+                // Generar PDF personalizado
+                if (btnPdfPersonalizado) {
+                    btnPdfPersonalizado.addEventListener('click', function() {
+                        console.log('🟪 Click en PDF Personalizado');
+                        
+                        const seleccionados = Array.from(checkboxes)
+                            .filter(cb => cb.checked)
+                            .map(cb => cb.value);
+                        
+                        console.log('📋 IDs seleccionados:', seleccionados);
+                        
+                        if (seleccionados.length === 0) {
+                            alert('Por favor selecciona al menos un producto');
+                            return;
+                        }
+
+                        const url = "{{ route('despachos.pdf.personalizado', $despacho->id) }}" + '?productos=' + seleccionados.join(',');
+                        console.log('🔗 URL generada:', url);
+                        window.open(url, '_blank');
+                    });
+                }
+
+                // Generar llaves personalizadas
+                if (btnLlavesPersonalizadas) {
+                    btnLlavesPersonalizadas.addEventListener('click', function() {
+                        console.log('🟦 Click en Llaves Personalizadas');
+                        
+                        const seleccionados = Array.from(checkboxes)
+                            .filter(cb => cb.checked)
+                            .map(cb => cb.value);
+                        
+                        console.log('🔑 IDs seleccionados:', seleccionados);
+                        
+                        if (seleccionados.length === 0) {
+                            alert('Por favor selecciona al menos un producto');
+                            return;
+                        }
+
+                        const url = "{{ route('despachos.llaves.personalizadas', $despacho->id) }}" + '?productos=' + seleccionados.join(',');
+                        console.log('🔗 URL generada:', url);
+                        window.open(url, '_blank');
+                    });
+                }
+
+                // Estado inicial
+                console.log('🚀 Ejecutando estado inicial...');
+                actualizarEstado();
+                console.log('✅ Script completamente cargado');
             }
 
-            // Checkbox maestro
-            checkboxMaestro?.addEventListener('change', function() {
-                checkboxes.forEach(cb => cb.checked = this.checked);
-                actualizarEstado();
-            });
-
-            // Checkboxes individuales
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', actualizarEstado);
-            });
-
-            // Botón seleccionar todos
-            btnSeleccionarTodos?.addEventListener('click', function() {
-                checkboxes.forEach(cb => cb.checked = true);
-                actualizarEstado();
-            });
-
-            // Botón deseleccionar todos
-            btnDeseleccionarTodos?.addEventListener('click', function() {
-                checkboxes.forEach(cb => cb.checked = false);
-                actualizarEstado();
-            });
-
-            // Generar PDF personalizado
-            btnPdfPersonalizado?.addEventListener('click', function() {
-                const seleccionados = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-                
-                if (seleccionados.length === 0) {
-                    alert('Por favor selecciona al menos un producto');
-                    return;
-                }
-
-                const despachoId = {{ $despacho->id }};
-                const url = `/despachos/${despachoId}/pdf-personalizado?productos=${seleccionados.join(',')}`;
-                window.open(url, '_blank');
-            });
-
-            // Generar llaves personalizadas
-            btnLlavesPersonalizadas?.addEventListener('click', function() {
-                const seleccionados = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-                
-                if (seleccionados.length === 0) {
-                    alert('Por favor selecciona al menos un producto');
-                    return;
-                }
-
-                const despachoId = {{ $despacho->id }};
-                const url = `/despachos/${despachoId}/llaves-personalizadas?productos=${seleccionados.join(',')}`;
-                window.open(url, '_blank');
-            });
-
-            // Estado inicial
-            actualizarEstado();
-        });
+            // Ejecutar cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', inicializarSeleccion);
+            } else {
+                inicializarSeleccion();
+            }
+        })();
     </script>
-    @endpush
 </x-app-layout>

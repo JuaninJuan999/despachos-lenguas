@@ -20,11 +20,7 @@
             max-width: 8.5in;
             margin: 0 auto;
             font-family: Arial, sans-serif;
-<<<<<<< HEAD
-            font-size: 11px;
-=======
-            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
             color: #000;
         }
 
@@ -64,20 +60,13 @@
         }
         
         .header h1 {
-<<<<<<< HEAD
-            font-size: 18px;
-=======
-            font-size: 18px; /* 🔴 CAMBIADO: de 16px a 18px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 22px; /* 🔴 CAMBIADO: de 18px a 22px */
             margin-bottom: 8px;
+            font-weight: bold;
         }
         
         .header p {
-<<<<<<< HEAD
-            font-size: 11px;
-=======
-            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
             margin-bottom: 3px;
         }
         
@@ -95,22 +84,22 @@
         
         .info-cell {
             display: table-cell;
-            padding: 8px;
+            padding: 10px; /* 🔴 CAMBIADO: de 8px a 10px */
             border: 1px solid #ccc;
             vertical-align: middle;
-            font-size: 11px; /* 🔴 AGREGADO: tamaño de letra */
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
         }
         
         .info-label {
             font-weight: bold;
             background-color: #f0f0f0;
             width: 30%;
-            font-size: 11px;
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
         }
         
         .info-value {
             width: 70%;
-            font-size: 11px;
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
         }
         
         /* TABLE */
@@ -125,25 +114,17 @@
         th {
             background-color: #7ce8ad;
             color: #000;
-            padding: 10px 8px;
+            padding: 12px 10px; /* 🔴 CAMBIADO: de 10px 8px a 12px 10px */
             text-align: left;
-<<<<<<< HEAD
-            font-size: 11px;
-=======
-            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 13px; /* 🔴 CAMBIADO: de 11px a 13px */
             border: 1px solid #000;
             font-weight: bold;
         }
         
         td {
-            padding: 8px 8px;
+            padding: 10px; /* 🔴 CAMBIADO: de 8px a 10px */
             border: 1px solid #ddd;
-<<<<<<< HEAD
-            font-size: 10px;
-=======
-            font-size: 10px; /* 🔴 CAMBIADO: de 8px a 10px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 12px; /* 🔴 CAMBIADO: de 10px a 12px */
         }
         
         tr:nth-child(even) {
@@ -161,11 +142,7 @@
         }
         
         .totales p {
-<<<<<<< HEAD
-            font-size: 12px;
-=======
-            font-size: 12px; /* 🔴 CAMBIADO: de 11px a 12px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 14px; /* 🔴 CAMBIADO: de 12px a 14px */
             font-weight: bold;
             margin: 5px 0;
             color: #000;
@@ -177,16 +154,16 @@
             padding-top: 25px;
         }
         
+        .firma-section strong {
+            font-size: 13px; /* 🔴 AGREGADO: tamaño para firmas */
+        }
+        
         .footer {
             margin-top: 30px;
             padding-top: 15px;
             border-top: 1px solid #ccc;
             text-align: center;
-<<<<<<< HEAD
-            font-size: 9px;
-=======
-            font-size: 9px; /* 🔴 CAMBIADO: de 8px a 9px */
->>>>>>> 1e56d1f (Avance)
+            font-size: 11px; /* 🔴 CAMBIADO: de 9px a 11px */
             color: #666;
         }
     </style>
@@ -200,7 +177,7 @@
                 <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo.png'))) }}" alt="Logo">
             </div>
             <div class="header-content">
-                <h1> DESPACHO DE LENGUAS</h1>
+                <h1>DESPACHO DE LENGUAS</h1>
             </div>
         </div>
         
@@ -231,20 +208,12 @@
         </div>
         
         <!-- NOTA INFORMATIVA -->
-<<<<<<< HEAD
-<div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
-    <p style="font-size: 10px; line-height: 1.4; margin: 0;">
-        <strong>Nota:</strong> Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas.
-    </p>
-</div>
-=======
-        <div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
-            <p style="font-size: 10px; line-height: 1.4; margin: 0;"> <!-- 🔴 CAMBIADO: de 9px a 10px -->
+        <div style="margin-bottom: 15px; padding: 12px; background-color: #f0f8ff; border-left: 4px solid #7ce8ad;">
+            <p style="font-size: 12px; line-height: 1.5; margin: 0;"> <!-- 🔴 CAMBIADO: de 10px a 12px -->
                 <strong>Nota:</strong> Los productos relacionados a continuación, se despachan a conformidad, aptos para consumo humano, no presentan cambios en sus características organolépticas.
             </p>
         </div>
         
->>>>>>> 1e56d1f (Avance)
         <!-- TABLA DE PRODUCTOS - SOLO LENGUAS -->
         <table>
             <thead>
@@ -256,27 +225,15 @@
                 </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
                 @php
-                    // Filtrar y ordenar productos
-=======
-                {{-- 🔴 NUEVO: Filtrar y ordenar productos --}}
-                @php
->>>>>>> 1e56d1f (Avance)
                     $productosLenguas = collect($despacho->productos)
                         ->filter(function($producto) {
                             return str_ends_with($producto->codigo_producto, '-6000');
                         })
-<<<<<<< HEAD
-                        ->sortBy('codigo_producto') // Ordenar de menor a mayor por código
-                        ->values();
-                @endphp
-=======
-                        ->sortBy('codigo_producto') // Ordenar de menor a mayor
+                        ->sortBy('codigo_producto')
                         ->values();
                 @endphp
                 
->>>>>>> 1e56d1f (Avance)
                 @foreach($productosLenguas as $producto)
                     @php
                         $destino = $producto->destino_especifico ?? '';
