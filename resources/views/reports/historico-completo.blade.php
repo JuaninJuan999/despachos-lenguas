@@ -21,6 +21,42 @@
             <div class="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b">
                 <h2 class="text-xl font-bold text-gray-800">📜 Todos los Registros</h2>
             </div>
+
+            <form method="GET" action="{{ route('reports.historico-completo') }}" class="px-6 py-2.5 border-b bg-gradient-to-r from-gray-50 to-orange-50/30">
+                <div class="flex flex-wrap lg:flex-nowrap items-center gap-2">
+                    <label for="desde" class="inline-flex items-center px-2.5 h-8 rounded-md bg-gray-200 text-[11px] font-bold uppercase tracking-wide text-gray-700">Desde</label>
+                    <input
+                        type="date"
+                        id="desde"
+                        name="desde"
+                        value="{{ request('desde') }}"
+                        class="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-sm text-gray-900 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                    >
+
+                    <label for="hasta" class="inline-flex items-center px-2.5 h-8 rounded-md bg-gray-200 text-[11px] font-bold uppercase tracking-wide text-gray-700">Hasta</label>
+                    <input
+                        type="date"
+                        id="hasta"
+                        name="hasta"
+                        value="{{ request('hasta') }}"
+                        class="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-sm text-gray-900 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                    >
+
+                    <button
+                        type="submit"
+                        class="h-8 inline-flex items-center justify-center rounded-md border border-orange-500 bg-orange-300 px-4 text-sm font-extrabold tracking-wide text-orange-900 shadow-md transition hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    >
+                        Filtrar
+                    </button>
+
+                    <a
+                        href="{{ route('reports.historico-completo') }}"
+                        class="h-8 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-xs font-bold text-gray-800 shadow-sm transition hover:bg-gray-100"
+                    >
+                        Limpiar
+                    </a>
+                </div>
+            </form>
             
             <div class="overflow-x-auto">
                 <table class="w-full">

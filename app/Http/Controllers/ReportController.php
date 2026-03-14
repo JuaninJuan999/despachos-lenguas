@@ -39,7 +39,6 @@ class ReportController extends Controller
             abort(403, 'Acceso denegado. Solo administradores.');
         }
 
-        // ⭐ CAMBIO AQUÍ: Simplificada la carga de la relación para asegurar que funcione
         $query = Despacho::with(['creator', 'usuario'])
             ->latest('created_at');
 
@@ -49,6 +48,14 @@ class ReportController extends Controller
                 $q->where('conductor', 'like', '%'.$request->search.'%')
                   ->orWhere('destino_general', 'like', '%'.$request->search.'%');
             });
+        }
+
+        if ($request->filled('desde')) {
+            $query->whereDate('created_at', '>=', $request->string('desde'));
+        }
+
+        if ($request->filled('hasta')) {
+            $query->whereDate('created_at', '<=', $request->string('hasta'));
         }
 
         $despachos = $query->paginate(25);

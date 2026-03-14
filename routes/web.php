@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DespachoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserActivityReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -53,6 +54,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('reports')->name('reports.')->
         ->name('despachos-por-usuario');
     Route::get('/historico-completo', [ReportController::class, 'historicoCompleto'])
         ->name('historico-completo');
+    Route::get('/actividad-usuarios', [UserActivityReportController::class, 'index'])
+        ->name('user-activity');
 });
 
 require __DIR__.'/auth.php';

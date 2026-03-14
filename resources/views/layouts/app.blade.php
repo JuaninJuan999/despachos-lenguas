@@ -82,6 +82,7 @@
                         <div x-show="open" class="mt-1 space-y-1 pl-11" x-collapse>
                             <a href="{{ route('reports.despachos-por-usuario') }}" class="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg {{ request()->routeIs('reports.despachos-por-usuario') ? 'bg-gray-800 text-white' : '' }}">Por Usuario</a>
                             <a href="{{ route('reports.historico-completo') }}" class="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg {{ request()->routeIs('reports.historico-completo') ? 'bg-gray-800 text-white' : '' }}">Histórico Completo</a>
+                            <a href="{{ route('reports.user-activity') }}" class="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg {{ request()->routeIs('reports.user-activity') ? 'bg-gray-800 text-white' : '' }}">Actividad de Usuarios</a>
                         </div>
                     </div>
                     @endrole

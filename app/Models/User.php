@@ -117,4 +117,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Despacho::class, 'created_by');
     }
+
+    public function activities()
+    {
+        return $this->hasMany(UserActivity::class);
+    }
 }
