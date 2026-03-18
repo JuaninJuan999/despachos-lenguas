@@ -28,6 +28,16 @@
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
+
+            <div class="mt-6 text-center">
+                <p class="text-xs text-gray-500 font-medium">
+                    &copy; {{ date('Y') }} Sistema de Gestión de Despachos de Lenguas.
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    Todos los derechos reservados &mdash; Desarrollado por <span class="font-semibold text-gray-500">Juan Pablo Carreño</span>
+                </p>
+            </div>
+            
         </div>
     </body>
 </html>

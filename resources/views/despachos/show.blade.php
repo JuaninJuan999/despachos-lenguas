@@ -1,9 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Detalle del Despacho #') }}{{ $despacho->id }}
-            </h2>
+            <div class="flex items-center gap-4">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Institucional" class="h-10 w-auto object-contain">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('Detalle del Despacho #') }}{{ $despacho->id }}
+                </h2>
+            </div>
             <div class="flex gap-2">
                 {{-- Botones COMPLETOS (originales) --}}
                 <a 

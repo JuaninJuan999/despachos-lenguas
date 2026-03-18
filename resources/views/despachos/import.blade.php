@@ -1,8 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Importar Despacho') }}
-        </h2>
+        <div class="flex items-center gap-4">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Institucional" class="h-10 w-auto object-contain">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Importar Despacho') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">

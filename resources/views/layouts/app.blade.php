@@ -152,6 +152,20 @@
 
                         {{ $slot }}
                     </div>
+
+                    {{-- Footer Derechos de Autor --}}
+                    <footer class="bg-white border-t border-gray-200 mt-6">
+                        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-6 w-auto object-contain">
+                                <span class="text-sm text-gray-500 font-medium">Sistema de Gestión de Despachos de Lenguas</span>
+                            </div>
+                            <div class="text-center sm:text-right">
+                                <p class="text-xs text-gray-500 font-medium">&copy; {{ date('Y') }} Todos los derechos reservados.</p>
+                                <p class="text-xs text-gray-400">Desarrollado por <span class="font-semibold text-gray-500">Juan Pablo Carreño</span></p>
+                            </div>
+                        </div>
+                    </footer>
                 </main>
             </div>
         </div>

@@ -1,13 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex items-center gap-4">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Institucional" class="h-10 w-auto object-contain">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Dashboard') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             {{-- Mensaje de bienvenida --}}
             <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg shadow-lg p-6 mb-6 text-white">
                 <h3 class="text-2xl font-bold mb-2">¡Bienvenido, {{ Auth::user()->first_name }}!</h3>
