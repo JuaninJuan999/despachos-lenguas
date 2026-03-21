@@ -103,9 +103,9 @@
                                 name="password" 
                                 id="password" 
                                 required
-                                minlength="6"
+                                minlength="8"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('password') border-red-500 @enderror"
-                                placeholder="Mínimo 6 caracteres"
+                                placeholder="Mínimo 8 caracteres"
                             >
                             @error('password')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -122,7 +122,7 @@
                                 name="password_confirmation" 
                                 id="password_confirmation" 
                                 required
-                                minlength="6"
+                                minlength="8"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="Repite la contraseña"
                             >

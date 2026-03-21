@@ -18,7 +18,7 @@ class Despacho extends Model
         'lenguas',
         'archivo_original',
         'usuario_id',
-        'created_by', // ← NUEVO: Quién creó el despacho
+        'created_by',
     ];
 
     protected $casts = [
@@ -32,19 +32,19 @@ class Despacho extends Model
         return $this->hasMany(DespachoProducto::class);
     }
 
-    // Relación: Un despacho pertenece a un usuario (ANTIGUA)
+    // Relación: Un despacho pertenece a un usuario (legado)
     public function usuario()
     {
         return $this->belongsTo(User::class, 'usuario_id');
     }
 
-    // ← NUEVA RELACIÓN: Quién creó realmente el despacho
+    // Relación: Quién creó el despacho
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // ← NUEVO: Auto-asignar creador al crear
+    // Auto-asignar creador al crear
     protected static function booted()
     {
         static::creating(function ($despacho) {

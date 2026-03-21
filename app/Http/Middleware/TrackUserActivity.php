@@ -11,22 +11,21 @@ use Symfony\Component\HttpFoundation\Response;
 class TrackUserActivity
 {
     /**
-     * Handle an incoming request.
+     * Actualiza last_seen_at en la sesión abierta cada 5 minutos.
+     * Sirve para detectar sesiones abandonadas (browser cerrado sin logout).
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
             $userId = auth()->id();
-            $cacheKey = 'user-activity-log:' . $userId;
+            $cacheKey = 'user-heartbeat:' . $userId;
 
             if (! Cache::has($cacheKey)) {
-                UserActivity::create([
-                    'user_id' => $userId,
-                    'path' => '/' . ltrim($request->path(), '/'),
-                    'ip_address' => $request->ip(),
-                    'user_agent' => substr((string) $request->userAgent(), 0, 1000),
-                    'occurred_at' => now(),
-                ]);
+                UserActivity::where('user_id', $userId)
+                    ->whereNull('logged_out_at')
+                    ->latest('logged_in_at')
+                    ->first()
+                    ?->update(['last_seen_at' => now()]);
 
                 Cache::put($cacheKey, true, now()->addMinutes(5));
             }

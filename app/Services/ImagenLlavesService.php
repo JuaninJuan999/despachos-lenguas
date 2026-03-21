@@ -37,9 +37,9 @@ class ImagenLlavesService
     {
         $this->imageManager = new ImageManager(new Driver());
         
-        // Configurar rutas de fuentes
-        $this->fuenteRegular = public_path('storage/fonts/Roboto-Regular.ttf');
-        $this->fuenteBold = public_path('storage/fonts/Roboto-Bold.ttf');
+        // Configurar rutas de fuentes (están en storage/fonts/)
+        $this->fuenteRegular = storage_path('fonts/Roboto-Regular.ttf');
+        $this->fuenteBold = storage_path('fonts/Roboto-Bold.ttf');
         
         // Verificar que existen las fuentes
         if (!file_exists($this->fuenteRegular)) {

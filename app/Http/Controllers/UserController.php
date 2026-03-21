@@ -38,13 +38,13 @@ class UserController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:8|confirmed',
             'role' => 'required|exists:roles,name',
         ], [
             'first_name.required' => 'El nombre es obligatorio',
             'last_name.required' => 'El apellido es obligatorio',
             'password.required' => 'La contraseña es obligatoria',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
             'role.required' => 'Debe seleccionar un rol',
         ]);
@@ -95,14 +95,19 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        // Regenerar username si cambió nombre o apellido
-        $username = User::generateUsername($request->first_name, $request->last_name);
+        // Regenerar username solo si cambió el nombre o apellido
+        $nameChanged = $user->first_name !== $request->first_name
+            || $user->last_name !== $request->last_name;
+
+        $username = $nameChanged
+            ? User::generateUsername($request->first_name, $request->last_name)
+            : $user->username;
 
         $user->update([
-            'name' => $request->first_name . ' ' . $request->last_name,
+            'name'       => $request->first_name . ' ' . $request->last_name,
             'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'username' => $username,
+            'last_name'  => $request->last_name,
+            'username'   => $username,
         ]);
 
         $user->syncRoles([$request->role]);
@@ -118,10 +123,10 @@ class UserController extends Controller
     public function resetPassword(Request $request, User $user)
     {
         $request->validate([
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:8|confirmed',
         ], [
             'password.required' => 'La contraseña es obligatoria',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
         ]);
 

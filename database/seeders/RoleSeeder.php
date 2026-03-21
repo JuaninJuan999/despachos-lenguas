@@ -14,10 +14,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear roles
-        $adminRole = Role::create(['name' => 'Admin']);
-        $operadorRole = Role::create(['name' => 'Operador']);
-        $lecturaRole = Role::create(['name' => 'Lectura']);
+        // Crear roles (minúsculas para coincidir con middleware 'role:admin')
+        $adminRole = Role::create(['name' => 'admin']);
+        $operadorRole = Role::create(['name' => 'operador']);
+        $lecturaRole = Role::create(['name' => 'lectura']);
 
         // Crear permisos
         $permisos = [

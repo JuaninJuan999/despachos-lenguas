@@ -10,16 +10,21 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear usuario Admin (sin roles por ahora)
-        User::create([
-            'name' => 'Administrador',
-            'email' => 'tecnologia@colbeef.com',
-            'password' => Hash::make('SIRT123'),
-            'email_verified_at' => now(),
+        $password = env('ADMIN_PASSWORD', 'Admin@12345');
+
+        $user = User::create([
+            'name'               => 'Administrador',
+            'first_name'         => 'Administrador',
+            'last_name'          => 'Sistema',
+            'username'           => 'admin',
+            'email'              => env('ADMIN_EMAIL', 'tecnologia@colbeef.com'),
+            'password'           => Hash::make($password),
+            'email_verified_at'  => now(),
+            'active'             => true,
         ]);
 
-        echo "✅ Usuario Admin creado exitosamente\n";
-        echo "📧 Email: tecnologia@colbeef.com\n";
-        echo "🔑 Password: SIRT123\n";
+        $user->assignRole('admin');
+
+        $this->command->info('Usuario Admin creado. Username: admin');
     }
 }

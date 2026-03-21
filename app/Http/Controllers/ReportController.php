@@ -14,10 +14,6 @@ class ReportController extends Controller
      */
     public function despachosPorUsuario(Request $request): View
     {
-        if (!auth()->user()->hasRole('admin')) {
-            abort(403, 'Acceso denegado. Solo administradores.');
-        }
-
         $usuarios = User::query()
             ->where('active', true)
             ->withCount('despachosCreados as total_despachos')
@@ -35,12 +31,8 @@ class ReportController extends Controller
      */
     public function historicoCompleto(Request $request): View
     {
-        if (!auth()->user()->hasRole('admin')) {
-            abort(403, 'Acceso denegado. Solo administradores.');
-        }
-
         $query = Despacho::with(['creator', 'usuario'])
-            ->latest('created_at');
+            ->orderBy('id', 'asc');
 
         // Filtros opcionales
         if ($request->filled('search')) {

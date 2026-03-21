@@ -17,7 +17,7 @@ class DespachoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Despacho::with(['creator', 'usuario'])->latest();
+        $query = Despacho::with(['creator', 'usuario'])->orderByDesc('id');
 
         // LÓGICA DE FILTRADO:
         
@@ -71,8 +71,9 @@ class DespachoController extends Controller
                 ->route('despachos.index')
                 ->with('success', 'Despacho importado correctamente.');
         } catch (\Exception $e) {
+            report($e);
             return back()
-                ->with('error', 'Error al procesar el archivo: ' . $e->getMessage());
+                ->with('error', 'Error al procesar el archivo. Verifica que el formato sea correcto.');
         }
     }
 
@@ -81,8 +82,12 @@ class DespachoController extends Controller
      */
     public function show(Despacho $despacho)
     {
-        // PERMITIR VER SI: Es dueño O es Admin
-        if ($despacho->usuario_id !== auth()->id() && !Auth::user()->hasRole('admin')) {
+        // Permitir si es dueño (usuario_id o created_by) o si es admin
+        if (
+            $despacho->usuario_id !== auth()->id() &&
+            $despacho->created_by !== auth()->id() &&
+            !Auth::user()->hasRole('admin')
+        ) {
             abort(403, 'No tienes permiso para ver este despacho');
         }
 
@@ -96,8 +101,11 @@ class DespachoController extends Controller
      */
     public function generatePDF(Despacho $despacho)
     {
-        // PERMITIR VER SI: Es dueño O es Admin
-        if ($despacho->usuario_id !== auth()->id() && !Auth::user()->hasRole('admin')) {
+        if (
+            $despacho->usuario_id !== auth()->id() &&
+            $despacho->created_by !== auth()->id() &&
+            !Auth::user()->hasRole('admin')
+        ) {
             abort(403, 'No tienes permiso para ver este despacho');
         }
 
@@ -115,20 +123,25 @@ class DespachoController extends Controller
      */
     public function generatePDFPersonalizado(Despacho $despacho, Request $request)
     {
-        // PERMITIR VER SI: Es dueño O es Admin
-        if ($despacho->usuario_id !== auth()->id() && !Auth::user()->hasRole('admin')) {
+        if (
+            $despacho->usuario_id !== auth()->id() &&
+            $despacho->created_by !== auth()->id() &&
+            !Auth::user()->hasRole('admin')
+        ) {
             abort(403, 'No tienes permiso para ver este despacho');
         }
 
-        // Obtener IDs de productos seleccionados desde la query string
         $productosSeleccionados = $request->query('productos');
-        
+
         if (empty($productosSeleccionados)) {
             return back()->with('error', 'Debes seleccionar al menos un producto.');
         }
 
-        // Convertir string separado por comas a array
-        $productosIds = explode(',', $productosSeleccionados);
+        // Validar que sean IDs enteros válidos
+        $productosIds = array_filter(
+            array_map('intval', explode(',', $productosSeleccionados)),
+            fn($id) => $id > 0
+        );
 
         // Cargar el despacho con solo los productos seleccionados
         $despacho->load(['productos' => function ($query) use ($productosIds) {
@@ -153,8 +166,11 @@ class DespachoController extends Controller
      */
     public function generateImagenLlaves(Despacho $despacho, ImagenLlavesService $imagenService)
     {
-        // PERMITIR VER SI: Es dueño O es Admin
-        if ($despacho->usuario_id !== auth()->id() && !Auth::user()->hasRole('admin')) {
+        if (
+            $despacho->usuario_id !== auth()->id() &&
+            $despacho->created_by !== auth()->id() &&
+            !Auth::user()->hasRole('admin')
+        ) {
             abort(403, 'No tienes permiso para generar llaves de este despacho');
         }
 
@@ -183,20 +199,25 @@ class DespachoController extends Controller
      */
     public function generateImagenLlavesPersonalizadas(Despacho $despacho, ImagenLlavesService $imagenService, Request $request)
     {
-        // PERMITIR VER SI: Es dueño O es Admin
-        if ($despacho->usuario_id !== auth()->id() && !Auth::user()->hasRole('admin')) {
+        if (
+            $despacho->usuario_id !== auth()->id() &&
+            $despacho->created_by !== auth()->id() &&
+            !Auth::user()->hasRole('admin')
+        ) {
             abort(403, 'No tienes permiso para generar llaves de este despacho');
         }
 
-        // Obtener IDs de productos seleccionados
         $productosSeleccionados = $request->query('productos');
-        
+
         if (empty($productosSeleccionados)) {
             return back()->with('error', 'Debes seleccionar al menos un producto.');
         }
 
-        // Convertir string a array
-        $productosIds = explode(',', $productosSeleccionados);
+        // Validar que sean IDs enteros válidos
+        $productosIds = array_filter(
+            array_map('intval', explode(',', $productosSeleccionados)),
+            fn($id) => $id > 0
+        );
 
         try {
             // Cargar solo los productos seleccionados

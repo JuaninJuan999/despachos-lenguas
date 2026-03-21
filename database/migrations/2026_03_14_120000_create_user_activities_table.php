@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('user_activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('path', 255);
             $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->timestamp('occurred_at');
+            $table->string('user_agent', 1000)->nullable();
+            $table->timestamp('logged_in_at');
+            $table->timestamp('logged_out_at')->nullable();  // null = sesión activa o abandonada
+            $table->timestamp('last_seen_at')->nullable();   // heartbeat cada 5 min
             $table->timestamps();
 
-            $table->index(['user_id', 'occurred_at']);
-            $table->index('occurred_at');
+            $table->index(['user_id', 'logged_in_at']);
+            $table->index('logged_in_at');
         });
     }
 

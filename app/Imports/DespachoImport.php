@@ -35,12 +35,12 @@ class DespachoImport implements ToCollection
                 'lenguas' => 0,
                 'archivo_original' => request()->file('excel_file')->getClientOriginalName(),
                 'usuario_id' => $this->usuarioId,
-                'created_by' => $this->usuarioId, // <-- ESTE ES EL CAMBIO
+                'created_by' => $this->usuarioId,
             ]);
 
             $contadorLenguas = 0;
 
-            // ✅ PROCESAR TODOS LOS PRODUCTOS (no solo -1001)
+            // Procesar todos los productos
             for ($i = 14; $i < $rows->count(); $i++) {
                 $row = $rows[$i];
 
@@ -61,7 +61,7 @@ class DespachoImport implements ToCollection
                 // Obtener código base: 2601-11413-1001 -> 2601-11413
                 $codigoBase = $this->obtenerCodigoBase($codigo);
 
-                // ✅ DETERMINAR SI ES LENGUA (-1001) O COLA (-1002)
+                // Determinar si es LENGUA (-1001) o COLA (-1002)
                 $esLengua = str_ends_with($codigo, '-1001');
                 
                 if ($esLengua) {
@@ -80,7 +80,7 @@ class DespachoImport implements ToCollection
                 $destinoEspecifico = trim($row[5] ?? '');
                 $fechaBeneficio = $this->parseFecha($row[6] ?? null);
 
-                // ✅ GUARDAR TODOS LOS PRODUCTOS (lenguas Y colas)
+                // Guardar todos los productos (lenguas y colas)
                 DespachoProducto::create([
                     'despacho_id' => $despacho->id,
                     'codigo_producto' => $codigoFinal,
@@ -98,7 +98,8 @@ class DespachoImport implements ToCollection
             $despacho->update(['lenguas' => $contadorLenguas]);
 
         } catch (\Exception $e) {
-            throw new \Exception('Error al procesar el archivo: ' . $e->getMessage());
+            report($e);
+            throw new \Exception('Error al procesar el archivo. Verifica que el formato sea correcto.');
         }
     }
 
