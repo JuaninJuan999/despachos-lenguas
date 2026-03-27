@@ -16,6 +16,28 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
+        <!-- Botón SUIT PRINCIPAL en la parte superior izquierda -->
+        <a href="http://192.168.20.205:8000/site.html" style="
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(124,58,237,0.18);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        " onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'">
+            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" /><path stroke="currentColor" stroke-width="2" d="M8 12h8M12 8v8" /></svg>
+            SUIT PRINCIPAL
+        </a>
     
     <!-- Header con navegación -->
     <header class="absolute top-0 left-0 right-0 z-10">

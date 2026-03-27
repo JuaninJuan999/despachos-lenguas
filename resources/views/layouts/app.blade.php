@@ -40,6 +40,24 @@
 
                 {{-- Menú de Navegación --}}
                 <nav class="mt-5 px-4 space-y-2 overflow-y-auto h-[calc(100vh-140px)]">
+                    <!-- SUIT PRINCIPAL Mejorado -->
+                    <li>
+                        <a href="http://192.168.20.205:8000/site.html"
+                           class="flex items-center p-2 text-white rounded-lg font-bold transition-all"
+                           style="
+                               background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+                               box-shadow: 0 2px 8px rgba(124,58,237,0.18);
+                               gap: 8px;
+                           "
+                           onmouseover="this.style.background='#4338ca'"
+                           onmouseout="this.style.background='linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                                <path stroke="currentColor" stroke-width="2" d="M8 12h8M12 8v8" />
+                            </svg>
+                            <span class="ml-3">SUIT PRINCIPAL</span>
+                        </a>
+                    </li>
                     
                     {{-- Dashboard --}}
                     <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
