@@ -16,28 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
-        <!-- Botón SUIT PRINCIPAL en la parte superior izquierda -->
-        <a href="http://192.168.20.205:8000/site.html" style="
-            position: fixed;
-            top: 18px;
-            left: 18px;
-            z-index: 1000;
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            box-shadow: 0 2px 8px rgba(124,58,237,0.18);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        " onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'">
-            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" /><path stroke="currentColor" stroke-width="2" d="M8 12h8M12 8v8" /></svg>
-            SUIT PRINCIPAL
-        </a>
+
     
     <!-- Header con navegación -->
     <header class="absolute top-0 left-0 right-0 z-10">
@@ -45,13 +24,17 @@
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto mt-10">
                     
                 </div>
 
                 <!-- Botones de autenticación -->
                 @if (Route::has('login'))
                     <div class="flex items-center space-x-4">
+                        <a href="http://192.168.20.205:8000/site.html" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg shadow-md hover:from-blue-700 hover:to-purple-700 flex items-center gap-2 transition-all duration-200">
+                            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" /><path stroke="currentColor" stroke-width="2" d="M8 12h8M12 8v8" /></svg>
+                            SUIT PRINCIPAL
+                        </a>
                         @auth
                             <a href="{{ url('/dashboard') }}" 
                                class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
@@ -62,7 +45,6 @@
                                class="px-6 py-2.5 text-gray-700 font-semibold hover:text-blue-600 transition-colors duration-200">
                                 Iniciar Sesión
                             </a>
-
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}" 
                                    class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
