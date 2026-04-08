@@ -13,6 +13,26 @@ use Illuminate\Support\Facades\Auth;
 class DespachoController extends Controller
 {
     /**
+     * IDs de productos desde GET (?productos=1,2) o POST (productos[]).
+     */
+    private function idsProductosDesdeRequest(Request $request): array
+    {
+        if ($request->isMethod('post')) {
+            $raw = $request->input('productos', []);
+            if (! is_array($raw)) {
+                $raw = ($raw !== null && $raw !== '') ? [$raw] : [];
+            }
+        } else {
+            $raw = explode(',', (string) $request->query('productos', ''));
+        }
+
+        return array_values(array_unique(array_filter(
+            array_map('intval', $raw),
+            fn ($id) => $id > 0
+        )));
+    }
+
+    /**
      * Listado de despachos.
      */
     public function index(Request $request)
@@ -131,17 +151,11 @@ class DespachoController extends Controller
             abort(403, 'No tienes permiso para ver este despacho');
         }
 
-        $productosSeleccionados = $request->query('productos');
+        $productosIds = $this->idsProductosDesdeRequest($request);
 
-        if (empty($productosSeleccionados)) {
+        if (count($productosIds) === 0) {
             return back()->with('error', 'Debes seleccionar al menos un producto.');
         }
-
-        // Validar que sean IDs enteros válidos
-        $productosIds = array_filter(
-            array_map('intval', explode(',', $productosSeleccionados)),
-            fn($id) => $id > 0
-        );
 
         // Cargar el despacho con solo los productos seleccionados
         $despacho->load(['productos' => function ($query) use ($productosIds) {
@@ -207,17 +221,11 @@ class DespachoController extends Controller
             abort(403, 'No tienes permiso para generar llaves de este despacho');
         }
 
-        $productosSeleccionados = $request->query('productos');
+        $productosIds = $this->idsProductosDesdeRequest($request);
 
-        if (empty($productosSeleccionados)) {
+        if (count($productosIds) === 0) {
             return back()->with('error', 'Debes seleccionar al menos un producto.');
         }
-
-        // Validar que sean IDs enteros válidos
-        $productosIds = array_filter(
-            array_map('intval', explode(',', $productosSeleccionados)),
-            fn($id) => $id > 0
-        );
 
         try {
             // Cargar solo los productos seleccionados

@@ -32,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/despachos/{despacho}/pdf', [DespachoController::class, 'generatePDF'])->name('despachos.pdf');
     Route::get('/despachos/{despacho}/llaves', [DespachoController::class, 'generateImagenLlaves'])->name('despachos.llaves');
     
-    // Exportación PERSONALIZADA (nueva) - Adicionales
-    Route::get('/despachos/{despacho}/pdf-personalizado', [DespachoController::class, 'generatePDFPersonalizado'])->name('despachos.pdf.personalizado');
-    Route::get('/despachos/{despacho}/llaves-personalizadas', [DespachoController::class, 'generateImagenLlavesPersonalizadas'])->name('despachos.llaves.personalizadas');
+    // Exportación PERSONALIZADA (Adicionales): GET (legacy) + POST (formulario, más fiable en navegador)
+    Route::match(['get', 'post'], '/despachos/{despacho}/pdf-personalizado', [DespachoController::class, 'generatePDFPersonalizado'])->name('despachos.pdf.personalizado');
+    Route::match(['get', 'post'], '/despachos/{despacho}/llaves-personalizadas', [DespachoController::class, 'generateImagenLlavesPersonalizadas'])->name('despachos.llaves.personalizadas');
 });
 
 // Gestión de Usuarios (solo admin)

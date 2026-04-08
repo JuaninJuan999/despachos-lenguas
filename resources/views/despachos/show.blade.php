@@ -150,7 +150,7 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table id="tablaLenguasDespacho" class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-green-50">
                                     <tr>
                                         <th class="px-4 py-3 text-center w-12">
@@ -222,56 +222,83 @@
     {{-- 🔴 SCRIPT MOVIDO AQUÍ (fuera de @push) --}}
     <script>
         (function() {
-            console.log('🔍 Script cargado - Iniciando...');
-            
+            function enviarPostDescarga(url, idsSeleccionados) {
+                const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                if (!tokenMeta) {
+                    alert('No se encontró el token de seguridad. Recarga la página e inténtalo de nuevo.');
+                    return;
+                }
+
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+                form.target = '_blank';
+                form.style.display = 'none';
+
+                var csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = tokenMeta.getAttribute('content');
+                form.appendChild(csrf);
+
+                idsSeleccionados.forEach(function (id) {
+                    var inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = 'productos[]';
+                    inp.value = id;
+                    form.appendChild(inp);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            }
+
+            function checkboxesProductos() {
+                const tabla = document.getElementById('tablaLenguasDespacho');
+                if (!tabla) {
+                    return [];
+                }
+                return Array.from(tabla.querySelectorAll('.checkbox-producto'));
+            }
+
             function inicializarSeleccion() {
-                const checkboxes = document.querySelectorAll('.checkbox-producto');
                 const checkboxMaestro = document.getElementById('checkboxMaestro');
                 const btnSeleccionarTodos = document.getElementById('btnSeleccionarTodos');
                 const btnDeseleccionarTodos = document.getElementById('btnDeseleccionarTodos');
                 const contadorSeleccionados = document.getElementById('contadorSeleccionados');
                 const btnPdfPersonalizado = document.getElementById('btnPdfPersonalizado');
                 const btnLlavesPersonalizadas = document.getElementById('btnLlavesPersonalizadas');
+                const tabla = document.getElementById('tablaLenguasDespacho');
 
-                console.log('📦 Checkboxes encontrados:', checkboxes.length);
-                console.log('🟪 Botón PDF:', btnPdfPersonalizado);
-                console.log('🟦 Botón Llaves:', btnLlavesPersonalizadas);
-
-                if (checkboxes.length === 0) {
-                    console.error('❌ No se encontraron checkboxes');
+                if (!tabla || checkboxesProductos().length === 0) {
                     return;
                 }
 
-                // Actualizar contador y botones
                 function actualizarEstado() {
-                    const seleccionados = Array.from(checkboxes).filter(cb => cb.checked);
+                    const cbs = checkboxesProductos();
+                    const seleccionados = cbs.filter(cb => cb.checked);
                     const cantidad = seleccionados.length;
-                    
-                    console.log('✅ Productos seleccionados:', cantidad);
-                    
+
                     if (contadorSeleccionados) {
                         contadorSeleccionados.textContent = `${cantidad} producto${cantidad !== 1 ? 's' : ''} seleccionado${cantidad !== 1 ? 's' : ''}`;
                     }
-                    
-                    // Habilitar/deshabilitar botones
+
                     const haySeleccion = cantidad > 0;
-                    
+
                     if (btnPdfPersonalizado) {
                         btnPdfPersonalizado.disabled = !haySeleccion;
-                        console.log('🟪 PDF habilitado:', !btnPdfPersonalizado.disabled);
                     }
-                    
+
                     if (btnLlavesPersonalizadas) {
                         btnLlavesPersonalizadas.disabled = !haySeleccion;
-                        console.log('🟦 Llaves habilitadas:', !btnLlavesPersonalizadas.disabled);
                     }
-                    
-                    // Actualizar checkbox maestro
+
                     if (checkboxMaestro) {
                         if (cantidad === 0) {
                             checkboxMaestro.checked = false;
                             checkboxMaestro.indeterminate = false;
-                        } else if (cantidad === checkboxes.length) {
+                        } else if (cbs.length > 0 && cantidad === cbs.length) {
                             checkboxMaestro.checked = true;
                             checkboxMaestro.indeterminate = false;
                         } else {
@@ -281,92 +308,74 @@
                     }
                 }
 
-                // Checkbox maestro
-                if (checkboxMaestro) {
-                    checkboxMaestro.addEventListener('change', function() {
-                        console.log('🎯 Checkbox maestro clickeado');
-                        checkboxes.forEach(cb => cb.checked = this.checked);
+                tabla.addEventListener('change', function(e) {
+                    if (e.target && e.target.classList && e.target.classList.contains('checkbox-producto')) {
                         actualizarEstado();
-                    });
-                }
-
-                // Checkboxes individuales
-                checkboxes.forEach((cb, index) => {
-                    cb.addEventListener('change', function() {
-                        console.log(`🔲 Checkbox ${index} cambiado a:`, this.checked);
-                        actualizarEstado();
-                    });
+                    }
                 });
 
-                // Botón seleccionar todos
+                if (checkboxMaestro) {
+                    checkboxMaestro.addEventListener('change', function() {
+                        checkboxesProductos().forEach(cb => { cb.checked = this.checked; });
+                        actualizarEstado();
+                    });
+                }
+
                 if (btnSeleccionarTodos) {
                     btnSeleccionarTodos.addEventListener('click', function() {
-                        console.log('✅ Seleccionar todos');
-                        checkboxes.forEach(cb => cb.checked = true);
+                        checkboxesProductos().forEach(cb => { cb.checked = true; });
                         actualizarEstado();
                     });
                 }
 
-                // Botón deseleccionar todos
                 if (btnDeseleccionarTodos) {
                     btnDeseleccionarTodos.addEventListener('click', function() {
-                        console.log('❌ Deseleccionar todos');
-                        checkboxes.forEach(cb => cb.checked = false);
+                        checkboxesProductos().forEach(cb => { cb.checked = false; });
                         actualizarEstado();
                     });
                 }
 
-                // Generar PDF personalizado
                 if (btnPdfPersonalizado) {
                     btnPdfPersonalizado.addEventListener('click', function() {
-                        console.log('🟪 Click en PDF Personalizado');
-                        
-                        const seleccionados = Array.from(checkboxes)
+                        const seleccionados = checkboxesProductos()
                             .filter(cb => cb.checked)
-                            .map(cb => cb.value);
-                        
-                        console.log('📋 IDs seleccionados:', seleccionados);
-                        
+                            .map(cb => cb.value)
+                            .filter(Boolean);
+
                         if (seleccionados.length === 0) {
                             alert('Por favor selecciona al menos un producto');
                             return;
                         }
 
-                        const url = "{{ route('despachos.pdf.personalizado', $despacho->id) }}" + '?productos=' + seleccionados.join(',');
-                        console.log('🔗 URL generada:', url);
-                        window.open(url, '_blank');
+                        enviarPostDescarga(
+                            "{{ route('despachos.pdf.personalizado', $despacho->id) }}",
+                            seleccionados
+                        );
                     });
                 }
 
-                // Generar llaves personalizadas
                 if (btnLlavesPersonalizadas) {
                     btnLlavesPersonalizadas.addEventListener('click', function() {
-                        console.log('🟦 Click en Llaves Personalizadas');
-                        
-                        const seleccionados = Array.from(checkboxes)
+                        const seleccionados = checkboxesProductos()
                             .filter(cb => cb.checked)
-                            .map(cb => cb.value);
-                        
-                        console.log('🔑 IDs seleccionados:', seleccionados);
-                        
+                            .map(cb => cb.value)
+                            .filter(Boolean);
+
                         if (seleccionados.length === 0) {
                             alert('Por favor selecciona al menos un producto');
                             return;
                         }
 
-                        const url = "{{ route('despachos.llaves.personalizadas', $despacho->id) }}" + '?productos=' + seleccionados.join(',');
-                        console.log('🔗 URL generada:', url);
-                        window.open(url, '_blank');
+                        enviarPostDescarga(
+                            "{{ route('despachos.llaves.personalizadas', $despacho->id) }}",
+                            seleccionados
+                        );
                     });
                 }
 
-                // Estado inicial
-                console.log('🚀 Ejecutando estado inicial...');
                 actualizarEstado();
-                console.log('✅ Script completamente cargado');
             }
 
-            // Ejecutar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', inicializarSeleccion);
             } else {

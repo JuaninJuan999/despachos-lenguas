@@ -182,7 +182,16 @@
 </head>
 <body>
     <div class="container">
-        
+        @php
+            $productosLenguas = collect($despacho->productos)
+                ->filter(function ($producto) {
+                    return str_ends_with($producto->codigo_producto, '-6000');
+                })
+                ->sortBy('codigo_producto')
+                ->values();
+            $totalLenguasEnDocumento = $productosLenguas->count();
+        @endphp
+
         <!-- HEADER -->
         <div class="header">
             <div class="logo-container">
@@ -205,7 +214,7 @@
                 <td class="info-label">Fecha Expedición:</td>
                 <td class="info-value">{{ $despacho->fecha_expedicion ? $despacho->fecha_expedicion->format('d/m/Y H:i') : 'N/A' }}</td>
                 <td class="info-label">Total Lenguas:</td>
-                <td class="info-value">{{ $despacho->lenguas ?? 'N/A' }}</td>
+                <td class="info-value">{{ $totalLenguasEnDocumento }}</td>
             </tr>
         </table>
 
@@ -229,15 +238,6 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $productosLenguas = collect($despacho->productos)
-                        ->filter(function($producto) {
-                            return str_ends_with($producto->codigo_producto, '-6000');
-                        })
-                        ->sortBy('codigo_producto')
-                        ->values();
-                @endphp
-                
                 @foreach($productosLenguas as $producto)
                     @php
                         $destino = $producto->destino_especifico ?? '';
